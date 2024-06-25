@@ -1,4 +1,4 @@
-name: Deploy Strapi to EC2
+name: Deploy Strapi on EC2
 
 on:
   push:
