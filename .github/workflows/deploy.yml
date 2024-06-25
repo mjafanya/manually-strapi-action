@@ -1,0 +1,43 @@
+name: Deploy Strapi to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build Strapi
+      run: npm run build
+
+    - name: Deploy to EC2
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        EC2_USER: 'ubuntu'
+        EC2_HOST: 'your-ec2-public-ip'
+        EC2_PORT: '22'
+      run: |
+        echo "$SSH_PRIVATE_KEY" > private_key.pem
+        chmod 600 private_key.pem
+        scp -i private_key.pem -r ./* $EC2_USER_EC2_HOST:/home/ubuntu/my-project
+        ssh -i private_key.pem $EC2_USER_EC2_HOST 'bash -s' <<'EOF'
+          cd /home/ubuntu/my-project
+          npm install --production
+          pm2 restart all || pm2 start npm --name "strapi" -- run start
+        EOF
+
