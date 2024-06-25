@@ -1,0 +1,18 @@
+2024-06-25T07:39:20: PM2 log: ===============================================================================
+2024-06-25T07:39:20: PM2 log: --- New PM2 Daemon started ----------------------------------------------------
+2024-06-25T07:39:20: PM2 log: Time                 : Tue Jun 25 2024 07:39:20 GMT+0000 (Coordinated Universal Time)
+2024-06-25T07:39:20: PM2 log: PM2 version          : 5.4.1
+2024-06-25T07:39:20: PM2 log: Node.js version      : 18.19.1
+2024-06-25T07:39:20: PM2 log: Current arch         : x64
+2024-06-25T07:39:20: PM2 log: PM2 home             : /root/.pm2
+2024-06-25T07:39:20: PM2 log: PM2 PID file         : /root/.pm2/pm2.pid
+2024-06-25T07:39:20: PM2 log: RPC socket file      : /root/.pm2/rpc.sock
+2024-06-25T07:39:20: PM2 log: BUS socket file      : /root/.pm2/pub.sock
+2024-06-25T07:39:20: PM2 log: Application log path : /root/.pm2/logs
+2024-06-25T07:39:20: PM2 log: Worker Interval      : 30000
+2024-06-25T07:39:20: PM2 log: Process dump file    : /root/.pm2/dump.pm2
+2024-06-25T07:39:20: PM2 log: Concurrent actions   : 2
+2024-06-25T07:39:20: PM2 log: SIGTERM timeout      : 1600
+2024-06-25T07:39:20: PM2 log: ===============================================================================
+2024-06-25T07:39:20: PM2 log: App [strapi:0] starting in -fork mode-
+2024-06-25T07:39:20: PM2 log: App [strapi:0] online
