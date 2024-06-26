@@ -25,7 +25,16 @@ jobs:
        env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
-          KEY_PATH: ${{ secrets.KEY_PATH }}
+          KEY_PATH: ${{ secrets.KEY_PATH }} 
+          
+     - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        
+        with:
+          aws-access-key-id: ${{ secrets.JAFANYA_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.JAFANYA_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
        run: |
            sudo apt-get update -y
            sudo apt-get install -y sshpass
@@ -35,13 +44,29 @@ jobs:
      - name: SSH and Deploy to EC2
        env:
          EC2_USER: ${{ secrets.EC2_USER }}
-         EC2_HOST: ${{ secrets.EC2_HOST }}
-         KEY_PATH: ${{ secrets.KEY_PATH }}
-       run: |
+         KEY_PATH: ${{ secrets.KEY_PATH }} 
+         
+     - name: Create SSH Key File
+        run: 
         scp -i new-keypair.pem -r ./* $EC2_USER@$EC2_HOST:/home/ubuntu/my-project
         ssh -i new-keypair.pem $EC2_USER@$EC2_HOST 'bash -s' <<'EOF'
+          mkdir -p /home/runner/.ssh
+          echo "${{ secrets.JAFANYA_EC2_KEY }}" > /home/runner/.ssh/new-keypair.pem
           mkdir -p /home/ubuntu/my-project
           cd /home/ubuntu/my-project
           npm install --production
           pm2 restart all || pm2 start npm --name "strapi" -- run start
         EOF
+          chmod 600 /home/runner/.ssh/new-keypair.pem
+          ls -al /home/runner/.ssh  # Verify permissions and existence
+         
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.JAFANYA_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.JAFANYA_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+       run: |
+        
+        
