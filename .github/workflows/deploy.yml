@@ -38,10 +38,12 @@ jobs:
          EC2_HOST: ${{ secrets.EC2_HOST }}
          KEY_PATH: ${{ secrets.KEY_PATH }}
        run: |
-           ssh -i new_keypair.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
-           cd /home/ubuntu/srv/Strapi_app/Strapi_let
-           git pull
-           yarn install
-           yarn build
-           pm2 start npm --name "Strapi" -- run start
-           EOF
+            echo "$SSH_KEY_PATH" > new_keypair.pem
+        chmod 600 new_keypair.pem
+        scp -i new_keypair.pem -r ./* $EC2_USER@$EC2_HOST:/home/ubuntu/my-project
+        ssh -i new_keypair.pem $EC2_USER@$EC2_HOST 'bash -s' <<'EOF'
+          mkdir -p /home/ubuntu/my-project
+          cd /home/ubuntu/my-project
+          npm install --production
+          pm2 restart all || pm2 start npm --name "strapi" -- run start
+        EOF
