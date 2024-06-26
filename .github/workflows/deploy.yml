@@ -17,8 +17,7 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '14'
-        cache: '.npm'
-        path: "root/manually-strapi-action/my-project"
+        cache: 'root/manually-strapi-action/my-projectii'
 
     - name: Install dependencies
       run: npm install
