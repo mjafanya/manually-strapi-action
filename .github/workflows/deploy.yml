@@ -38,7 +38,7 @@ jobs:
          EC2_HOST: ${{ secrets.EC2_HOST }}
          KEY_PATH: ${{ secrets.KEY_PATH }}
        run: |
-           ssh -i key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
+           ssh -i new_keypair.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
            cd /home/ubuntu/srv/Strapi_app/Strapi_let
            git pull
            yarn install
