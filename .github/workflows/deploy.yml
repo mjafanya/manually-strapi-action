@@ -1,45 +1,47 @@
-name: Deploy Strapi on EC2
+name: Deploy to Amazon EC2
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+     - name: Checkout code
+       uses: actions/checkout@v2
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-        cache: 'root/manually-strapi-action/my-project'
+     - name: Set up Node
+       uses: actions/setup-node@v2
+       with:
+          node-version: '18.x'
+     - name: Install dependencies
 
-    - name: Install dependencies
-      run: npm install
-      working-directory: ./my-project
+       run: npm install -g yarn
 
-    - name: Build Strapi
-      run: npm run build
-      working-directory: ./my-project
+     - name: EC2 update
+       env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          KEY_PATH: ${{ secrets.KEY_PATH }}
+       run: |
+           sudo apt-get update -y
+           sudo apt-get install -y sshpass
+           echo "${{ secrets.KEY_PATH }}" > key.pem
+           chmod 600 key.pem
 
-    - name: Deploy to EC2
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        EC2_USER: 'ubuntu'
-        EC2_HOST: 'your-ec2-public-ip'
-        EC2_PORT: '22'
-      run: |
-        echo "$SSH_PRIVATE_KEY" > private_key.pem
-        chmod 600 private_key.pem
-        scp -i private_key.pem -r ./* $EC2_USER_EC2_HOST:/root/manually-strapi-action/my-project
-        ssh -i private_key.pem $EC2_USER_EC2_HOST 'bash -s' <<'EOF'
-          cd /root/manually-strapi-action/my-project
-          npm install --production
-          pm2 restart all || pm2 start npm --name "strapi" -- run start
-        EOF
-
+     - name: SSH and Deploy to EC2
+       env:
+         EC2_USER: ${{ secrets.EC2_USER }}
+         EC2_HOST: ${{ secrets.EC2_HOST }}
+         KEY_PATH: ${{ secrets.KEY_PATH }}
+       run: |
+           ssh -i key.pem -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} << 'EOF'
+           cd /home/ubuntu/srv/Strapi_app/Strapi_let
+           git pull
+           yarn install
+           yarn build
+           pm2 start npm --name "Strapi" -- run start
+           EOF
