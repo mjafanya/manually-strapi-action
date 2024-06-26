@@ -29,8 +29,8 @@ jobs:
        run: |
            sudo apt-get update -y
            sudo apt-get install -y sshpass
-           echo "${{ secrets.KEY_PATH }}" > key.pem
-           chmod 600 key.pem
+           echo "${{ secrets.KEY_PATH }}" > new_keypair.pem
+           chmod 600 new_keypair.pem
 
      - name: SSH and Deploy to EC2
        env:
