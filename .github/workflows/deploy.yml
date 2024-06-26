@@ -29,7 +29,6 @@ jobs:
           
      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
-        
         with:
           aws-access-key-id: ${{ secrets.JAFANYA_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.JAFANYA_AWS_SECRET_ACCESS_KEY }}
@@ -57,16 +56,5 @@ jobs:
           npm install --production
           pm2 restart all || pm2 start npm --name "strapi" -- run start
         EOF
-          chmod 600 /home/runner/.ssh/new-keypair.pem
-          ls -al /home/runner/.ssh  # Verify permissions and existence
-         
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.JAFANYA_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.JAFANYA_AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-       run: |
-        
+          
         
