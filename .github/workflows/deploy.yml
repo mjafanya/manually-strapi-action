@@ -18,6 +18,7 @@ jobs:
       with:
         node-version: '14'
         cache: '.npm'
+        path: "root/manually-strapi-action/my-project"
 
     - name: Install dependencies
       run: npm install
@@ -36,9 +37,9 @@ jobs:
       run: |
         echo "$SSH_PRIVATE_KEY" > private_key.pem
         chmod 600 private_key.pem
-        scp -i private_key.pem -r ./* $EC2_USER_EC2_HOST:/home/ubuntu/my-project
+        scp -i private_key.pem -r ./* $EC2_USER_EC2_HOST:/root/manually-strapi-action/my-project
         ssh -i private_key.pem $EC2_USER_EC2_HOST 'bash -s' <<'EOF'
-          cd /home/ubuntu/my-project
+          cd /root/manually-strapi-action/my-project
           npm install --production
           pm2 restart all || pm2 start npm --name "strapi" -- run start
         EOF
