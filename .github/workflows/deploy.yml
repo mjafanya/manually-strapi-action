@@ -38,8 +38,6 @@ jobs:
          EC2_HOST: ${{ secrets.EC2_HOST }}
          KEY_PATH: ${{ secrets.KEY_PATH }}
        run: |
-            echo "$SSH_KEY_PATH" > new_keypair.pem
-        chmod 600 new_keypair.pem
         scp -i new_keypair.pem -r ./* $EC2_USER@$EC2_HOST:/home/ubuntu/my-project
         ssh -i new_keypair.pem $EC2_USER@$EC2_HOST 'bash -s' <<'EOF'
           mkdir -p /home/ubuntu/my-project
